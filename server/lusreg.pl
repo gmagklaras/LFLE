@@ -12,8 +12,8 @@ use Digest::SHA qw(sha1 sha1_hex sha256_hex);
 use Digest::MD5 qw(md5_hex);
 
 my $sdelay=400000;
-my $reghome="/biotek/cn1/storage/users/luarmreg";
-my $userhome="/biotek/cn1/storage/users";
+my $reghome="/home/luarmreg";
+my $userhome="/home";
 
 opendir(DIR, $reghome) || die "lusreg Error:can't open client registration directory: $!";
 my @requests = grep { /^.*luarm$/ } readdir(DIR);
@@ -104,8 +104,10 @@ foreach my $req (@requests) {
 	       		print "lusreg Error: No records were altered. Record was not registered.\n";
        		}	
 			
+			$SQLh->finish();
+
 			#If this is a new registration, we also need to create a database entry for it
-			#The name of the database will be the cid string of the registered client
+			#The name of the database will be the cid string of the registered client WITHOUT THE DASHES
 			#Quick hack, roll in the SQL schema from an external file, assuming that the 
 			#MySQL password is in .my.cnf
 			#Strip the dashes of the $cid
@@ -124,12 +126,11 @@ foreach my $req (@requests) {
 			close(DBC);
 			select STDOUT;
 			print "cid is $cid \n";
-			system ("mysql < /dev/shm/$timeref.dbcreate");
-			system ("mysql $cid < itpslschema.sql");
+			system ("mysql < /dev/shm/$timeref.dbcreate --password=$dbpass");
+			system ("mysql $cid < itpslschema.sql --password=$dbpass");
 			unlink "/dev/shm/$timeref.dbcreate";
+			
 
-			
-			
 		} #end of elsif
 
     
@@ -138,7 +139,7 @@ foreach my $req (@requests) {
 #Subroutines here
 sub getdbauth {
 	#DBAUTH path hardwired only on the server side
-	unless(open DBAUTH, "</root/luarmv2/.adb.dat") {
+	unless(open DBAUTH, "./.adb.dat") {
 			die "lusreg Error:getdbauth: Could not open the .adb.dat file due to: $!";
 		}
 
@@ -175,3 +176,4 @@ sub timestamp {
 	$SQLh->finish();
 	return ($year,$month,$day,$hour,$min,$sec);
 } #end of timestamp
+
