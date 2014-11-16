@@ -7,9 +7,29 @@ DISCLAIMER:
 -----------
 This software is provided AS IS. The author and the hosting institution cannot accept any liabilities for data loss, IT system misconfiguration/interference to normal operation/physical damage or any other lossas a result of running this code.
 
-LFLE:
-#####
+LFLE Summary
+############
 
-The Linux Forensic Logging Environment is a set of tools whose purpose is to provide comprehensive user, process, file access and network endpoint activity data for Linux and Unix based systems. 
+The Linux Forensic Logging Environment (LFLE) is a set of tools whose purpose is to provide comprehensive user, process, file access and network endpoint activity data for Linux and Unix based systems. The goal is to provide a tool that can help IT specialists bridge the data loss gap between what post-mortem forensic examination tools can detect and what is lost from the live operation of a system. The collected data is stored away from the monitored systems and thus can shed light on digital forensics investigations of Linux systems that have been security compromised, stolen or physically destroyed.
 
-The software evolved out of the LUARM logging engine, a research prototype that focused on insider IT misuse mitigation (https://sourceforge.net/projects/luarm/) 
+LFLE is being actively developed by Steelcyber Scientific (http://www.steelcyber.com) and while commercial support is available, the software is Open Source.
+
+The software evolved out of the LUARM logging engine, a research prototype that focused on insider IT misuse mitigation (https://sourceforge.net/projects/luarm/). The architectural limitations (performance, security) of the LUARM v1 research prototype prompted a total redesign of its internals.
+
+Directory structure
+===================
+-client: Contains code you should install and run on the systems you wish to monitor.
+-server: Contains code you should install and run on a dedicated server-grade system that can act as your forensic investigation hub
+-doc: Documents you should consult to understand how to install/deploy LFLE, as well as how it works.
+
+
+Support
+=======
+
+Commercial support and bug request queries for LFLE should be directed to:
+info@mail.steelcyber.com
+
+
+
+
+
