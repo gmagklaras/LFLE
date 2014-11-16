@@ -17,7 +17,7 @@ Most Linux distributions will have ready made packages for these Perl modules.
 For example, RedHat based distros (Fedora, RHEL, CentOS) could install the modules 
 by typing: 
 
-yum -y install perl-Net-OpenSSH perl-Net-SSH perl-Net-SSH-Perl perl-Net-SCP
+yum -y install perl-Net-OpenSSH perl-Net-SSH perl-Net-SSH-Perl perl-Net-SCP perl-IO-Pty-Easy
 
 Debian/Ubuntu based distros would have equivalent commands via their package managers. 
 Distro specific packages are preferred but if that fails, you can always use CPAN 
