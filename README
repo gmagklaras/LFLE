@@ -7,4 +7,9 @@ DISCLAIMER:
 -----------
 This software is provided AS IS. The author and the hosting institution cannot accept any liabilities for data loss, IT system misconfiguration/interference to normal operation/physical damage or any other lossas a result of running this code.
 
+LFLE:
+#####
 
+The Linux Forensic Logging Environment is a set of tools whose purpose is to provide comprehensive user, process, file access and network endpoint activity data for Linux and Unix based systems. 
+
+The software evolved out of the LUARM logging engine, a research prototype that focused on insider IT misuse mitigation (https://sourceforge.net/projects/luarm/) 
