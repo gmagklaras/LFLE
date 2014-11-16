@@ -12,6 +12,10 @@ use Digest::MD5 qw(md5 md5_hex md5_base64);
 use DBI;
 use Time::HiRes qw(usleep clock_gettime gettimeofday clock_getres CLOCK_REALTIME ITIMER_REAL ITIMER_VIRTUAL ITIMER_PROF ITIMER_REALPROF);
  
+#Get the number of server cores to make to parallelize the whole thing a bit
+my $corecount=`cat /proc/cpuinfo | grep ^processor | wc -l`;
+chomp $corecount;
+
 #Get the list of database userids
 my @authinfo=getdbauth();
 my ($dbusername,$dbname,$dbpass,$hostname);
@@ -30,8 +34,12 @@ while (@row=$SQLh->fetchrow_array) {
 }
 $SQLh->finish();
 
+#Number of jobs
+my $njobs=$#cidhits+1;
+
 #Debug 
-print "Users are: @cidhits \n";
+print " Running on $corecount server cores and having $njobs jobs.\n Users are: @cidhits \n";
+
 
 #For every detected user account get the *.proc files, parse them,populate 
 #the RDBMS and eventually delete them to save space
