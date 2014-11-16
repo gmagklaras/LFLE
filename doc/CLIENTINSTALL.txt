@@ -1,0 +1,45 @@
+Outline of steps to install the LFLE client
+###########################################
+
+Step 1: Check Internet connectivity:
+Ensure that your LFLE clients have access to the Internet OR a mirror of 
+Linux Distro packages and CPAN. 
+
+
+Step 2: Install the following Perl packages:
+-Net::OpenSSH
+-Net::SSH::Perl
+-Net::SCP
+-IO::File
+-Time::HiRes
+
+Most Linux distributions will have ready made packages for these Perl modules.
+For example, RedHat based distros (Fedora, RHEL, CentOS) could install the modules 
+by typing: 
+
+yum -y install perl-Net-OpenSSH perl-Net-SSH perl-Net-SSH-Perl perl-Net-SCP
+
+Debian/Ubuntu based distros would have equivalent commands via their package managers. 
+Distro specific packages are preferred but if that fails, you can always use CPAN 
+as your trusted friend:
+http://www.cpan.org/
+
+
+Step 3: Download the LFLE code. Your system should have a commandline git client, so you
+can clone the repository. As user root, ensure you make a directory NOT accessible by the
+other users of the system. cd into that directory and git clone the LXFE repo by typing:
+git clone https://github.com/gmagklaras/LFLE
+
+
+Step 4: Register your LFLE client on your LFLE server
+You should have the LFLE server running by now. Make sure you write down the IP address of 
+your LFLE server. (Public IP or internal LAN,your choice, as SSH/SCP is used for secure data 
+transfer). Then cd into the git cloned dir and go into the client subdirectory. 
+Run the client registration script:
+
+lucreg.pl --server SERVER_DNS_NAME_OR_IP_ADDRESS --pass PASSWORD
+
+
+
+
+
