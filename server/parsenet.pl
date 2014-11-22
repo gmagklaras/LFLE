@@ -131,7 +131,7 @@ foreach my $user (@cidhits) {
 #Subroutines here
 sub getdbauth {
 	#DBAUTH path hardwired only on the server side
-	unless(open DBAUTH, "</root/luarmv2/.adb.dat") {
+	unless(open DBAUTH, "<./.adb.dat") {
 			die "lusreg Error:getdbauth: Could not open the .adb.dat file due to: $!";
 		}
 
