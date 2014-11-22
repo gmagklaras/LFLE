@@ -11,6 +11,7 @@ use Digest::SHA qw(sha1 sha1_hex sha256_hex);
 use Digest::MD5 qw(md5 md5_hex md5_base64);
 use DBI;
 use Time::HiRes qw(usleep clock_gettime gettimeofday clock_getres CLOCK_REALTIME ITIMER_REAL ITIMER_VIRTUAL ITIMER_PROF ITIMER_REALPROF);
+use Parallel::ForkManager;
  
 #Get the number of server cores to make to parallelize the whole thing a bit
 my $corecount=`cat /proc/cpuinfo | grep ^processor | wc -l`;
@@ -34,17 +35,79 @@ while (@row=$SQLh->fetchrow_array) {
 }
 $SQLh->finish();
 
+#Not all hosts/users will need processing. Only the ones that have proc and net files 
+#uploaded in the home dirs
+my @activeusers;
+foreach my $user (@cidhits) {
+    	
+    	opendir(DIR, "/home/$user") || die "parseproc Error: can't open user directory /home/$user: $!";
+		my @myprocfiles = sort grep { /^[1-9][0-9]*.proc/  } readdir(DIR);
+		if ($#myprocfiles >= 1) { 
+			push(@activeusers, $user);
+		}		
+} #End of foreach my $user (@cidhits)
+
 #Number of jobs
-my $njobs=$#cidhits+1;
+my $nusers=$#activeusers+1;
 
 #Debug 
-print " Running on $corecount server cores and having $njobs jobs.\n Users are: @cidhits \n";
+print "Running on $corecount server cores and having $nusers active users.\n Users are: @activeusers \n";
 
+my $pm = Parallel::ForkManager->new($corecount);
+ 
+DATA_LOOP:
+foreach my $data (@activeusers) {
+  # Forks and returns the pid for the child:
+  my $pid = $pm->start and next DATA_LOOP;
+  procuser("$data");
+ 
+  $pm->finish; # Terminates the child process
+}
+	
 
-#For every detected user account get the *.proc files, parse them,populate 
-#the RDBMS and eventually delete them to save space
-foreach my $user (@cidhits) {
+#Subroutines here
+sub getdbauth {
+	#DBAUTH path hardwired only on the server side
+	unless(open DBAUTH, "<./.adb.dat") {
+			die "lusreg Error:getdbauth: Could not open the .adb.dat file due to: $!";
+		}
+
+	my @localarray;	
+	
+	while (<DBAUTH>) {
+		my $dbentry=$_;
+		chomp($dbentry);
+		push(@localarray, $dbentry);
+	}
+
+	return @localarray;	
+	
+} #end of getdbauth() 
+
+sub timestamp {
+	#get the db authentication info
+        my @authinfo=getdbauth();
+        my ($username,$dbname,$dbpass,$hostname);
+
+        foreach my $dbentry (@authinfo) {
+                ($username,$dbname,$dbpass,$hostname)=split("," , $dbentry);
+        }
+
+        my $datasource="DBI:mysql:$dbname:$hostname:3306";
+        my $itpslservh=DBI->connect ($datasource, $username, $dbpass, {RaiseError => 1, PrintError => 1});
+
+        my $SQLh=$itpslservh->prepare("select DATE_FORMAT(NOW(), '%Y-%m-%d-%k-%i-%s')");
+        $SQLh->execute();
+
+	my @timearray=$SQLh->fetchrow_array();
+	my ($year,$month,$day,$hour,$min,$sec)=split("-",$timearray[0]);
+	$SQLh->finish();
+	return ($year,$month,$day,$hour,$min,$sec);
+} #end of timestamp
+
+sub procuser {
 	#Debug
+	my $user= shift;
 	print "Processing user $user \n";
 	opendir(DIR, "/home/$user") || die "parseproc Error: can't open user directory /home/$user: $!";
 	my @myprocfiles = sort grep { /^[1-9][0-9]*.proc/  } readdir(DIR);
@@ -197,45 +260,4 @@ foreach my $user (@cidhits) {
 		unlink "/home/$user/$fitopr" or warn "parseproc.pl Warning: Could not unlink /home/$user/$fitopr: $!";
 	
 	} #end of my $fitopr (@myprocfiles)
-		
-} #End of foreach my $user (@cidhits)
-
-#Subroutines here
-sub getdbauth {
-	#DBAUTH path hardwired only on the server side
-	unless(open DBAUTH, "<./.adb.dat") {
-			die "lusreg Error:getdbauth: Could not open the .adb.dat file due to: $!";
-		}
-
-	my @localarray;	
-	
-	while (<DBAUTH>) {
-		my $dbentry=$_;
-		chomp($dbentry);
-		push(@localarray, $dbentry);
-	}
-
-	return @localarray;	
-	
-} #end of getdbauth() 
-
-sub timestamp {
-	#get the db authentication info
-        my @authinfo=getdbauth();
-        my ($username,$dbname,$dbpass,$hostname);
-
-        foreach my $dbentry (@authinfo) {
-                ($username,$dbname,$dbpass,$hostname)=split("," , $dbentry);
-        }
-
-        my $datasource="DBI:mysql:$dbname:$hostname:3306";
-        my $itpslservh=DBI->connect ($datasource, $username, $dbpass, {RaiseError => 1, PrintError => 1});
-
-        my $SQLh=$itpslservh->prepare("select DATE_FORMAT(NOW(), '%Y-%m-%d-%k-%i-%s')");
-        $SQLh->execute();
-
-	my @timearray=$SQLh->fetchrow_array();
-	my ($year,$month,$day,$hour,$min,$sec)=split("-",$timearray[0]);
-	$SQLh->finish();
-	return ($year,$month,$day,$hour,$min,$sec);
-} #end of timestamp
+} #end of sub procuser
