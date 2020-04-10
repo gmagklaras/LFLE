@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 
+#Copyright (C) 2014-2020 Georgios Magklaras
+#Steelcyber Scientific
 #Registers a LUARM v2 client to a LUARM v2 server
 
 use strict;
