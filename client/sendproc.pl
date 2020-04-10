@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
 
+#Copyright (C) 2014-2020 Georgios Magklaras
+#Steelcyber Scientific
+
 use strict;
 
 use Net::OpenSSH;
