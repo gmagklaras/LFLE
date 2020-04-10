@@ -2,7 +2,8 @@
 
 # parseproc.pl: A LUARM v2 server script that parses the process entries
 # and populates the psinfo RDBMS table of the ITPSLschema
-# By George Magklaras@steelcyber scientific
+#Copyright (C) 2014-2020 Georgios Magklaras
+#Steelcyber Scientific
 
 use strict;
 #use warnings;
