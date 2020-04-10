@@ -1,6 +1,8 @@
 #!/usr/bin/perl -w
 
 #lusreg : Handles the LUARM client v2 registration requests
+#Copyright (C) 2014-2020 Georgios Magklaras
+#Steelcyber Scientific
 
 use strict;
 
