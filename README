@@ -16,7 +16,7 @@ LFLE Summary
 
 The Linux Forensic Logging Environment (LFLE) is a set of tools whose purpose is to provide comprehensive user, process, file access and network endpoint activity data for Linux and Unix based systems. The goal is to provide a tool that can help IT specialists bridge the data loss gap between what post-mortem forensic examination tools can detect and what is lost from the live operation of a system. The collected data is stored away from the monitored systems and thus can shed light on digital forensics investigations of Linux systems that have been security compromised, stolen or physically destroyed.
 
-LFLE is being actively developed by Steelcyber Scientific (http://www.steelcyber.com) and while commercial support is available, the software is Open Source.
+LFLE is being actively developed by Steelcyber Scientific (https://www.steelcyber.com) and while commercial support is available, the software is Open Source.
 
 The software evolved out of the LUARM logging engine, a research prototype that focused on insider IT misuse mitigation (https://sourceforge.net/projects/luarm/). The architectural limitations (performance, security) of the LUARM v1 research prototype prompted a total redesign of its internals.
 
