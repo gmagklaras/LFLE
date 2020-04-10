@@ -6,7 +6,9 @@
 #      the execution of the parseproc.pl. Reason: It relies on the
 #      /proc data to cross reference the pid from the inode number in
 #      /proc/net/tcp(6).
-# By George Magklaras@steelcyber scientific
+
+#Copyright (C) 2014-2020 Georgios Magklaras
+#Steelcyber Scientific
 
 use strict;
 #use warnings;
